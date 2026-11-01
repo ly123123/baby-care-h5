@@ -1,0 +1,656 @@
+/* 宝宝成长记 · 统计页与成长简报弹层样式（前缀 st-，复用 styles.css 的变量与通用类） */
+
+/* ------------------------------------------------------------------ */
+/* 统计页整体                                                           */
+/* ------------------------------------------------------------------ */
+
+#page-stats {
+  overflow-x: clip;
+  min-width: 0;
+}
+
+.st-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  color: var(--ink);
+}
+
+.st-page button {
+  font-family: inherit;
+}
+
+/* 头部：复用 .page-head，只补分享按钮 */
+.st-share-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  margin-top: 2px;
+  border-radius: 15px;
+  color: var(--coral-deep);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.16s ease, opacity 0.16s ease;
+}
+
+.st-share-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.st-share-btn:disabled {
+  opacity: 0.34;
+  color: var(--ink-3);
+  background: rgba(255, 255, 255, 0.42);
+  border-color: var(--line);
+  box-shadow: none;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* 工具条：周期切换 + 周期导航 */
+.st-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.st-seg {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  background: var(--bg-deep);
+}
+
+.st-seg .seg-btn {
+  height: 44px;
+  min-width: 0;
+  padding: 0 8px;
+  font-size: 14px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.st-periodbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border-radius: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-soft);
+}
+
+.st-nav {
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.14s ease, background 0.18s ease;
+}
+
+.st-nav:active:not(:disabled) {
+  transform: scale(0.94);
+  background: var(--bg-deep);
+}
+
+.st-nav:disabled {
+  opacity: 0.32;
+  cursor: default;
+}
+
+.st-period-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  padding: 0 2px;
+}
+
+.st-period-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  row-gap: 2px;
+}
+
+.st-period-title {
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+
+.st-period-now {
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--coral-soft);
+  color: var(--coral-deep);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.st-today {
+  min-height: 28px;
+  padding: 3px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--sage-soft);
+  color: #5E7A62;
+  font-size: 11.5px;
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.st-today:active {
+  opacity: 0.75;
+}
+
+.st-period-range {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ------------------------------------------------------------------ */
+/* KPI：复用 .kpi-grid / .kpi，只微调间距                               */
+/* ------------------------------------------------------------------ */
+
+.st-kpis {
+  gap: 12px;
+}
+
+.st-kpi {
+  min-width: 0;
+}
+
+.st-kpi .kpi-sub {
+  font-variant-numeric: tabular-nums;
+}
+
+/* 总奶量副文案分两行，避免在「分/钟」处断行 */
+.st-sub-line {
+  display: block;
+}
+
+/* ------------------------------------------------------------------ */
+/* 卡片：.card 无内边距，内部块自己控制                                 */
+/* ------------------------------------------------------------------ */
+
+.st-card {
+  min-width: 0;
+}
+
+.st-card .card-sub {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.st-card-rate {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.st-card-rate b {
+  margin-left: 2px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--coral-deep);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 喂养概览列表 */
+.st-list {
+  display: flex;
+  flex-direction: column;
+  padding: 5px 16px 10px;
+}
+
+.st-row {
+  width: auto;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--line);
+}
+
+.st-row:first-child {
+  padding-top: 3px;
+}
+
+.st-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.st-row:active {
+  background: transparent;
+}
+
+.st-row .list-row-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: block;
+}
+
+.st-row .list-row-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.st-row .list-row-side {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.st-row-side-sub {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------------------ */
+/* 图表容器：复用 .chart，微调高度                                      */
+/* ------------------------------------------------------------------ */
+
+.st-chart {
+  height: 190px;
+}
+
+.st-chart[data-chart="diaper"] {
+  height: 200px;
+}
+
+.st-chart[data-chart="sleep"] {
+  height: 188px;
+}
+
+.st-chart .chart-empty,
+.chart-empty.st-chart-empty {
+  height: 100%;
+  min-height: 120px;
+  border-radius: 16px;
+  background: var(--surface-2);
+  font-size: 12px;
+}
+
+/* ------------------------------------------------------------------ */
+/* 补剂 / 护理进度                                                       */
+/* ------------------------------------------------------------------ */
+
+.st-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding: 5px 16px 16px;
+}
+
+.st-prog {
+  min-width: 0;
+}
+
+.st-prog-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.st-prog-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.st-prog-meta {
+  font-size: 11px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.st-progress {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+
+.st-track {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+
+.st-fill {
+  height: 100%;
+  min-width: 0;
+  border-radius: 999px;
+  background: var(--coral);
+  transition: width 0.35s ease;
+}
+
+.st-fill.is-sage {
+  background: var(--sage);
+}
+
+.st-fill.is-sky {
+  background: var(--sky);
+}
+
+/* ------------------------------------------------------------------ */
+/* 早教                                                                 */
+/* ------------------------------------------------------------------ */
+
+.st-early-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  padding: 4px 16px 16px;
+}
+
+.st-early {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 11px 12px;
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+
+.st-early-label {
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+
+.st-early-value {
+  font-size: 21px;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.st-early-value small {
+  margin-left: 2px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+
+.st-early-sub {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------------ */
+/* 洞察：复用 .insight-card / .insight-line                             */
+/* ------------------------------------------------------------------ */
+
+.st-insight {
+  padding: 17px 16px 14px;
+}
+
+.st-insight-title {
+  margin: 0 0 9px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #52664F;
+}
+
+.st-insight-list {
+  display: block;
+}
+
+.st-insight .insight-line + .insight-line {
+  margin-top: 8px;
+}
+
+.st-insight .insight-line::before {
+  content: '';
+  flex: none;
+  width: 5px;
+  height: 5px;
+  margin-top: 9px;
+  border-radius: 50%;
+  background: var(--sage);
+  opacity: 0.8;
+}
+
+.st-disclaimer {
+  margin: 12px 0 0;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------------------ */
+/* 主按钮                                                               */
+/* ------------------------------------------------------------------ */
+
+.st-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 2px 0 4px;
+}
+
+.st-brief-btn {
+  min-height: 48px;
+}
+
+.st-btn-icon {
+  flex: 0 0 auto;
+  display: block;
+}
+
+.st-actions-hint {
+  margin: 0;
+  padding: 0 6px;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+/* ------------------------------------------------------------------ */
+/* 空状态：复用 .empty                                                  */
+/* ------------------------------------------------------------------ */
+
+.st-empty .btn {
+  height: 44px;
+}
+
+.st-empty h3 {
+  font-size: 15px;
+}
+
+.st-empty p {
+  max-width: 300px;
+  margin: 5px auto 0;
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* ------------------------------------------------------------------ */
+/* 成长简报弹层                                                         */
+/* ------------------------------------------------------------------ */
+
+.st-brief {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.st-brief-preview {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border-radius: 18px;
+  background: var(--bg-deep);
+  overflow: hidden;
+}
+
+.st-brief-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 56vh;
+  object-fit: contain;
+  border-radius: 18px;
+  -webkit-touch-callout: default;
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+.st-brief-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 64px 0;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+.st-brief-loading p {
+  margin: 0;
+}
+
+.st-spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2.5px solid var(--coral-soft);
+  border-top-color: var(--coral);
+  animation: st-spin 0.9s linear infinite;
+}
+
+@keyframes st-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.st-brief-tip {
+  margin: 0;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-3);
+}
+
+.st-brief-error {
+  padding: 56px 20px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.st-brief-error p {
+  margin: 0;
+}
+
+.st-brief-actions {
+  display: grid;
+  gap: 10px;
+}
+
+.st-brief-actions .btn {
+  min-height: 48px;
+}
+
+.st-brief-sheet .sheet-foot {
+  padding-bottom: calc(14px + var(--safe-bottom, 0px));
+}
+
+.st-brief-pulse .sheet {
+  animation: st-sheet-pulse 0.4s ease;
+}
+
+@keyframes st-sheet-pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* 小屏适配                                                             */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 360px) {
+  .st-kpi .kpi-value {
+    font-size: 27px;
+  }
+
+  .st-period-title {
+    font-size: 15px;
+  }
+
+  .st-period-range {
+    font-size: 11.5px;
+  }
+
+  .st-actions-hint {
+    font-size: 10.5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-seg .seg-btn,
+  .st-share-btn,
+  .st-nav,
+  .st-fill {
+    transition: none;
+  }
+
+  .st-spinner {
+    animation-duration: 1.8s;
+  }
+
+  .st-brief-pulse .sheet {
+    animation: none;
+  }
+}
