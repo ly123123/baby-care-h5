@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="theme-color" content="#FAF5EF">
+  <meta name="description" content="宝宝成长记：记录每天的喂养、尿布、睡眠、补剂与护理，支持周/月/季统计、成长简报分享，以及家人实时共同记录。">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="成长记">
+  <title>宝宝成长记</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/stats.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <main class="pages" id="pages">
+      <section class="page" id="page-today" data-page="today" aria-label="今日记录"></section>
+      <section class="page" id="page-records" data-page="records" aria-label="记录历史"></section>
+      <section class="page" id="page-stats" data-page="stats" aria-label="统计"></section>
+      <section class="page" id="page-settings" data-page="settings" aria-label="我的"></section>
+    </main>
+    <nav class="tabbar" id="tabbar" aria-label="主导航"></nav>
+  </div>
+  <div class="overlay-root" id="overlay-root"></div>
+  <div class="toast-root" id="toast-root" aria-live="polite" aria-atomic="false"></div>
+  <noscript>
+    <div class="noscript">请在 Safari 设置中启用 JavaScript 后再使用宝宝成长记。</div>
+  </noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
