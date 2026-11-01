@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="宝宝成长记 App 图标">
+  <title>宝宝成长记</title>
+  <defs>
+    <linearGradient id="bg" x1="0.15" y1="0" x2="0.85" y2="1">
+      <stop offset="0" stop-color="#FFFCF8"/>
+      <stop offset="1" stop-color="#F7EEE4"/>
+    </linearGradient>
+    <linearGradient id="coral" x1="0.08" y1="0" x2="0.94" y2="1">
+      <stop offset="0" stop-color="#F6B097"/>
+      <stop offset="0.46" stop-color="#E58A72"/>
+      <stop offset="1" stop-color="#CE6B54"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="0.72">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.26"/>
+      <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="soft" x="-18%" y="-18%" width="136%" height="136%">
+      <feDropShadow dx="0" dy="9" stdDeviation="13" flood-color="#A97458" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <!-- 奶油底 -->
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- 珊瑚渐变圆角方块（maskable 安全区：白色主体均在中心 80% 圆内） -->
+  <rect x="38" y="38" width="436" height="436" rx="118" fill="url(#coral)" filter="url(#soft)"/>
+  <rect x="38" y="38" width="436" height="436" rx="118" fill="url(#gloss)"/>
+
+  <!-- 白色线稿：小芽 + 奶瓶 + 爱心 -->
+  <g fill="#FFFDFB">
+    <!-- 两片小芽 -->
+    <path d="M250.5 193.5c-13.6-1.4-31.8-13.4-36.3-32.6 19.2-3.9 34.9 12.2 36.3 32.6Z"/>
+    <path d="M261.5 193.5c13.6-1.4 31.8-13.4 36.3-32.6-19.2-3.9-34.9 12.2-36.3 32.6Z"/>
+    <!-- 花茎 -->
+    <rect x="249" y="170" width="14" height="40" rx="7"/>
+    <!-- 瓶口/瓶盖 -->
+    <rect x="221" y="203" width="70" height="28" rx="14"/>
+    <!-- 奶瓶瓶身（描边） -->
+  </g>
+  <rect x="196" y="229" width="120" height="160" rx="46" fill="none" stroke="#FFFDFB" stroke-width="16"/>
+  <!-- 奶瓶里的爱心 -->
+  <path fill="#FFFDFB" d="M256 344c-21.5-17.4-30.5-29.6-30.5-42.5 0-10 7.3-17.5 16.8-17.5 5.7 0 10.4 2.9 13.7 7.9 3.3-5 8-7.9 13.7-7.9 9.5 0 16.8 7.5 16.8 17.5 0 12.9-9 25.1-30.5 42.5Z"/>
+</svg>
