@@ -2199,3 +2199,19 @@ body.is-locked {
   .pi-check { padding: 7px 8px; font-size: 11.5px; }
   .pi-early-min { width: 92px; }
 }
+
+.pi-share-wrap { margin-top: 12px; }
+.pi-share-wrap .pi-micro { margin-top: 6px; }
+.pi-details { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); }
+.pi-details summary { color: var(--coral-deep); font-size: 11.5px; font-weight: 700; line-height: 1.5; cursor: pointer; }
+.pi-details[open] summary { margin-bottom: 8px; }
+.pi-details .pi-guide { margin-bottom: 4px; }
+
+.pi-ocr-wrap { margin-top: 12px; }
+.pi-ocr-actions { display: grid; grid-template-columns: 1.35fr 1fr; gap: 8px; }
+.pi-ocr-actions .btn { min-height: 42px; padding: 0 10px; font-size: 12px; }
+.pi-ocr-status { min-height: 18px; margin-top: 9px; color: var(--coral-deep); font-size: 11.5px; line-height: 1.5; }
+.pi-photo-wrap img { transform-origin: center; transition: transform .2s ease; }
+@media (max-width: 360px) {
+  .pi-ocr-actions { grid-template-columns: 1fr; }
+}

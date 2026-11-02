@@ -3,13 +3,14 @@
  *
  * 安全设计：
  * - 照片只在当前页面内预览，不上传；
- * - 文字由 iPhone「实况文本」在本机识别，用户粘贴；
+ * - 文字由内置 PaddleOCR 在本机 WebAssembly 中识别；
  * - 解析结果只作为建议，必须核对后才会写入当天数据。
  */
 
 import * as store from './store.js';
 import { icon, esc, openSheet, toast, confirmDialog, haptic } from './ui.js';
 import { parsePaperText } from './paper-parse.js';
+import { recognizePaper } from './paper-ocr.js';
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
@@ -176,6 +177,7 @@ function countExisting(day) {
 export function openPaperImport(options = {}) {
   const initialDate = options.dateKey || store.todayKey();
   let photoUrl = '';
+  let selectedFile = null;
 
   const body =
     '<div class="pi">' +
@@ -190,22 +192,24 @@ export function openPaperImport(options = {}) {
         '<input id="pi-camera" type="file" accept="image/*" capture="environment" hidden>' +
         '<input id="pi-library" type="file" accept="image/*" hidden>' +
         '<div id="pi-photo-wrap" class="pi-photo-wrap is-hidden"><img id="pi-photo" alt="纸质记录照片"><button type="button" class="pi-photo-clear" data-pi-clear>移除照片</button></div>' +
-        '<p class="pi-micro">为了用 iPhone 实况文本，建议先用相机 App 拍照（照片会自动进相册），再回这里选图。</p>' +
+        '<div id="pi-ocr-wrap" class="pi-ocr-wrap is-hidden">' +
+          '<div class="pi-ocr-actions">' +
+            '<button type="button" class="btn btn-primary" data-pi-ocr>' + icon('sparkle', 16) + ' 本地 OCR 识别</button>' +
+            '<button type="button" class="btn btn-soft" data-pi-rotate>' + icon('restore', 16) + ' 旋转 90°</button>' +
+          '</div>' +
+          '<p class="pi-ocr-status" id="pi-ocr-status"></p>' +
+          '<p class="pi-micro">首次识别需下载约 60MB 本机 OCR 文件（仅一次），之后可离线使用；照片不上传。</p>' +
+        '</div>' +
       '</section>' +
 
       '<section class="pi-card">' +
-        '<div class="pi-card-head"><span class="pi-step">2</span><div><h3>用实况文本取字</h3><p>在本机识别，不调用云端 OCR。</p></div></div>' +
-        '<ol class="pi-guide">' +
-          '<li>打开 iPhone「照片」App，找到这张纸。</li>' +
-          '<li>点右下角「实况文本」图标（或长按文字），全选 → 拷贝。</li>' +
-          '<li>回到这里，点下面的「粘贴识别文字」。</li>' +
-        '</ol>' +
+        '<div class="pi-card-head"><span class="pi-step">2</span><div><h3>核对识别文字</h3><p>本机 PaddleOCR 识别；识别结果可编辑。</p></div></div>' +
         '<div class="pi-text-actions">' +
-          '<button type="button" class="btn btn-soft" data-pi-paste>' + icon('copy', 16) + ' 粘贴识别文字</button>' +
+          '<button type="button" class="btn btn-soft" data-pi-paste>' + icon('copy', 16) + ' 粘贴文字</button>' +
           '<button type="button" class="btn btn-primary" data-pi-parse>' + icon('sparkle', 16) + ' 自动解析</button>' +
         '</div>' +
-        '<textarea class="input pi-textarea" id="pi-text" rows="7" placeholder="也可以手动长按输入框，选择「粘贴」…"></textarea>' +
-        '<p class="pi-micro">如果剪贴板没有内容，长按输入框手动粘贴即可。识别文字只用于本机解析。</p>' +
+        '<textarea class="input pi-textarea" id="pi-text" rows="8" placeholder="识别结果会自动出现在这里；也可以长按粘贴…"></textarea>' +
+        '<p class="pi-micro">首次识别会下载模型；识别完成后文字仍会保留，可手动修正。若方向不对，点上面的「旋转 90°」后重试。</p>' +
       '</section>' +
 
       '<div id="pi-review" class="pi-review is-hidden"></div>' +
@@ -218,6 +222,7 @@ export function openPaperImport(options = {}) {
     onClose() {
       if (photoUrl) URL.revokeObjectURL(photoUrl);
       photoUrl = '';
+      selectedFile = null;
     },
     onMount({ root, close }) {
       const review = $('#pi-review', root);
@@ -225,6 +230,9 @@ export function openPaperImport(options = {}) {
       let saving = false;
       const photoWrap = $('#pi-photo-wrap', root);
       const photoImg = $('#pi-photo', root);
+      const ocrWrap = $('#pi-ocr-wrap', root);
+      const ocrStatus = $('#pi-ocr-status', root);
+      let photoRotation = 0;
 
       function setPhoto(file) {
         if (!file) return;
@@ -233,17 +241,27 @@ export function openPaperImport(options = {}) {
           return;
         }
         if (photoUrl) URL.revokeObjectURL(photoUrl);
+        selectedFile = file;
+        photoRotation = 0;
         photoUrl = URL.createObjectURL(file);
+        photoImg.style.transform = '';
         photoImg.src = photoUrl;
         photoWrap.classList.remove('is-hidden');
+        ocrWrap.classList.remove('is-hidden');
+        ocrStatus.textContent = '';
         haptic();
       }
 
       function clearPhoto() {
         if (photoUrl) URL.revokeObjectURL(photoUrl);
         photoUrl = '';
+        selectedFile = null;
+        photoRotation = 0;
+        photoImg.style.transform = '';
         photoImg.removeAttribute('src');
         photoWrap.classList.add('is-hidden');
+        ocrWrap.classList.add('is-hidden');
+        ocrStatus.textContent = '';
       }
 
       $$('[data-pi-pick]', root).forEach((button) => {
@@ -258,12 +276,32 @@ export function openPaperImport(options = {}) {
       $('#pi-library', root).addEventListener('change', (event) => setPhoto(event.target.files && event.target.files[0]));
       $('[data-pi-clear]', root).addEventListener('click', clearPhoto);
 
-      $('[data-pi-paste]', root).addEventListener('click', async () => {
+      function parseText(text, options = {}) {
+        const value = String(text || '').trim();
+        if (!value) {
+          toast('请先拍照识别或粘贴文字', { icon: 'info' });
+          textarea.focus();
+          return;
+        }
+        const model = parsePaperText(value, {
+          dateKey: $('#pi-date') ? $('#pi-date').value : initialDate,
+          todayKey: store.todayKey(),
+        });
+        review.innerHTML = reviewHtml(model);
+        review.classList.remove('is-hidden');
+        updateTotal(review);
+        haptic();
+        if (options.scroll !== false) {
+          review.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      async function importClipboard() {
         try {
           if (!navigator.clipboard || !navigator.clipboard.readText) throw new Error('no clipboard');
           const text = await navigator.clipboard.readText();
-          if (!text.trim()) {
-            toast('剪贴板是空的，请先在照片里拷贝文字', { icon: 'info' });
+          if (!text || !text.trim()) {
+            toast('剪贴板是空的', { icon: 'info' });
             textarea.focus();
             return;
           }
@@ -273,24 +311,55 @@ export function openPaperImport(options = {}) {
           textarea.focus();
           toast('请长按输入框，选择「粘贴」', { icon: 'info' });
         }
-      });
+      }
+
+      $('[data-pi-paste]', root).addEventListener('click', () => importClipboard());
 
       $('[data-pi-parse]', root).addEventListener('click', () => {
-        const text = textarea.value.trim();
-        if (!text) {
-          toast('请先粘贴识别文字', { icon: 'info' });
-          textarea.focus();
+        parseText(textarea.value);
+      });
+
+      const ocrButton = $('[data-pi-ocr]', root);
+      const rotateButton = $('[data-pi-rotate]', root);
+      let ocrBusy = false;
+
+      rotateButton.addEventListener('click', () => {
+        if (!selectedFile) return;
+        photoRotation = (photoRotation + 90) % 360;
+        photoImg.style.transform = photoRotation ? 'rotate(' + photoRotation + 'deg)' : '';
+        ocrStatus.textContent = '已旋转到 ' + photoRotation + '°，可以重新识别';
+      });
+
+      ocrButton.addEventListener('click', async () => {
+        if (ocrBusy) return;
+        if (!selectedFile) {
+          toast('请先拍照或从相册选择一张纸质记录', { icon: 'info' });
           return;
         }
-        const model = parsePaperText(text, {
-          dateKey: $('#pi-date') ? $('#pi-date').value : initialDate,
-          todayKey: store.todayKey(),
-        });
-        review.innerHTML = reviewHtml(model);
-        review.classList.remove('is-hidden');
-        updateTotal(review);
-        haptic();
-        review.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        ocrBusy = true;
+        ocrButton.disabled = true;
+        rotateButton.disabled = true;
+        ocrStatus.textContent = '正在准备本机 OCR…首次需要下载模型';
+        try {
+          const result = await recognizePaper(selectedFile, {
+            rotation: photoRotation,
+            autoRotate: true,
+            onProgress(progress) {
+              if (progress && progress.message) ocrStatus.textContent = progress.message;
+            },
+          });
+          textarea.value = result.text;
+          ocrStatus.textContent = '识别完成 · ' + result.angle + '° · ' + (result.score >= 80 ? '质量较好' : '请重点核对');
+          parseText(result.text, { scroll: true });
+          toast('本机 OCR 完成，请逐项核对');
+        } catch (err) {
+          ocrStatus.textContent = '识别失败：' + (err && err.message ? err.message : '未知错误');
+          toast('识别失败，请换清晰照片或旋转后重试', { icon: 'info' });
+        } finally {
+          ocrBusy = false;
+          ocrButton.disabled = false;
+          rotateButton.disabled = false;
+        }
       });
 
       review.addEventListener('click', async (event) => {

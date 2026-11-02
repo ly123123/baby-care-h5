@@ -6,7 +6,7 @@ import { openBriefSheet } from './share.js';
 import { openPaperImport } from './paper-import.js';
 import * as sync from './sync.js';
 
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.4.0';
 
 const TABS = [
   { key: 'today', label: '今日', icon: 'baby' },
