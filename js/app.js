@@ -3,9 +3,10 @@ import * as store from './store.js';
 import { icon, esc, openSheet, closeSheet, confirmDialog, toast, haptic } from './ui.js';
 import { mountStatsPage } from './stats.js';
 import { openBriefSheet } from './share.js';
+import { openPaperImport } from './paper-import.js';
 import * as sync from './sync.js';
 
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.2.0';
 
 const TABS = [
   { key: 'today', label: '今日', icon: 'baby' },
@@ -408,7 +409,7 @@ function renderQuickActions() {
   const syncStatus = sync.getStatus();
   return (
     '<section class="quick-section">' +
-      '<div class="section-head"><h2 class="section-title">快速记录</h2><span class="section-hint">' + icon(syncStatus.enabled ? 'users' : 'shield', 13) + ' ' + (syncStatus.enabled ? '家庭实时共享' : '仅保存在本机') + '</span></div>' +
+      '<div class="section-head"><h2 class="section-title">快速记录</h2><div class="section-head-side"><span class="section-hint">' + icon(syncStatus.enabled ? 'users' : 'shield', 13) + ' ' + (syncStatus.enabled ? '家庭实时共享' : '仅保存在本机') + '</span><button type="button" class="section-link" data-action="paper-import">' + icon('camera', 14) + ' 纸质记录</button></div></div>' +
       '<div class="quick-grid">' +
       QUICK_ACTIONS.map(
         (action) =>
@@ -626,6 +627,15 @@ function onTodayClick(event) {
   else if (action === 'pick-date') pickDate(state.date, (key) => goToDate(key));
   else if (action === 'edit-status') openStatusSheet();
   else if (action === 'edit-note') openNoteSheet();
+  else if (action === 'paper-import') {
+    openPaperImport({
+      dateKey: state.date,
+      onSaved(key) {
+        if (key !== state.date) goToDate(key);
+        else renderToday();
+      },
+    });
+  }
   else if (action === 'edit-profile') openProfileSheet();
   else if (action === 'open-settings') activateTab('settings');
   else if (action === 'open-sync') openFamilySheet();
