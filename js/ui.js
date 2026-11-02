@@ -35,6 +35,8 @@ const ICONS = {
   info: '<circle cx="12" cy="12" r="8.4"/><path d="M12 11v5.2M12 7.8h.01"/>',
   more: '<circle cx="5.6" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/><circle cx="18.4" cy="12" r="1.2" fill="currentColor" stroke="none"/>',
   camera: '<path d="M4.4 7.8h3l1.4-2.2h6.4l1.4 2.2h3a1.8 1.8 0 0 1 1.8 1.8v8.6a1.8 1.8 0 0 1-1.8 1.8H4.4a1.8 1.8 0 0 1-1.8-1.8V9.6a1.8 1.8 0 0 1 1.8-1.8Z"/><circle cx="12" cy="13.4" r="3.1"/>',
+  image: '<rect x="3.6" y="4.6" width="16.8" height="14.8" rx="2.6"/><circle cx="8.8" cy="9.6" r="1.6"/><path d="m4.8 17.4 4.6-4.4 3.2 3 2.6-2.4 4 3.8"/>',
+  copy: '<rect x="8.4" y="8.4" width="11.2" height="11.2" rx="2.2"/><path d="M5.6 15.4H4.8A2.2 2.2 0 0 1 2.6 13.2V4.8a2.2 2.2 0 0 1 2.2-2.2h8.4a2.2 2.2 0 0 1 2.2 2.2v.8"/>',
   shield: '<path d="M12 3.2 19 6v5.4c0 4.4-3 7.4-7 9.4-4-2-7-5-7-9.4V6l7-2.8Z"/><path d="m9.2 12 2 2 3.6-3.8"/>',
   users: '<circle cx="9" cy="8.2" r="3.1"/><circle cx="17.2" cy="9.6" r="2.4"/><path d="M3.6 19.4c.4-3.2 2.6-5 5.4-5s5 1.8 5.4 5"/><path d="M15.3 14.4c2.1.2 3.8 1.7 4.2 4.1"/>',
   cloud: '<path d="M7.1 18.2h9.4a3.6 3.6 0 0 0 .5-7.1 5.1 5.1 0 0 0-9.7-1.4 4.1 4.1 0 0 0-.2 8.5Z"/>',
