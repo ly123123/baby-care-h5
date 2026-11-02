@@ -1,5 +1,5 @@
 /* 宝宝成长记 · Service Worker
- * 版本：babycare-v1.1.0
+ * 版本：babycare-v1.2.0
  * ------------------------------------------------------------
  * install  ：预缓存全部静态资源（列表必须与实际文件一致）
  * activate ：清理旧的 babycare-* 缓存 + clients.claim 接管页面
@@ -11,7 +11,7 @@
  */
 'use strict';
 
-const VERSION = 'babycare-v1.1.0';
+const VERSION = 'babycare-v1.2.0';
 const CACHE_PREFIX = 'babycare-';
 const OFFLINE_FALLBACK = './index.html';
 
@@ -27,6 +27,8 @@ const PRECACHE_URLS = [
   './js/stats.js',
   './js/charts.js',
   './js/share.js',
+  './js/paper-parse.js',
+  './js/paper-import.js',
   './js/sync-ops.js',
   './js/sync.js',
   './manifest.webmanifest',
